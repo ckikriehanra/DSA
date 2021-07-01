@@ -1,0 +1,54 @@
+#include <iostream>
+#include <string>
+using namespace std;
+int main()
+{
+    string text, pattern;
+    cin >> text >> pattern;
+    //KMP algorithm
+    int m, n;
+    m = text.length();
+    n = pattern.length();
+    int pl[n], i = 0;//previous local
+    pl[0] = 0;
+    for(int j = 1; j < n; j++)
+    {
+        if(pattern[j] == pattern[i])
+        {
+            pl[j] = i + 1;
+            i ++;
+        }
+        else
+        {
+            i = pl[i];
+            if(pattern[j] == pattern[i])
+            {
+                pl[j] = i + 1;
+                i ++;
+            }
+            else
+            {
+                pl[j] = 0;
+            }
+        }
+    }
+    int j = 0;
+    i = 0;
+    while(i < m && j < n)
+    {
+        if(pattern[j] == text[i])
+            j ++;
+        else
+            j = pl[j];
+        i++;
+    }
+    int result;
+    if(j == n)
+    {
+        result = i - n;
+        cout << result;
+    }
+    else
+        cout << "pattern is not in text";
+    return 0;
+}
