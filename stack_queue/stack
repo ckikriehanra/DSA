@@ -1,0 +1,105 @@
+a//Stack is linear data structure : ||||| : LIFO : last in first out : imagine birthday cake
+#include <iostream>
+
+using namespace std;
+class Node
+{
+private:
+    int data;
+public:
+    Node* previous;
+    int getData()
+    {
+        return data;
+    }
+    Node(int d)
+    {
+        data = d;
+        previous = NULL;
+    }
+    Node()
+    {
+        previous = NULL;
+    }
+};
+class Stack
+{
+private:
+    Node* head;//imagine person
+    void printOut(Node* x)
+    {
+        if(x == NULL)
+            return;
+        printOut(x->previous);
+        cout << x->getData() << '
+        ';
+    }
+public:
+    Stack()
+    {
+        head = NULL;
+    }
+
+    bool isEmpty()
+    {
+        return (head == NULL);
+    }
+
+    int peek()
+    {
+        if(head == NULL)
+            throw "Empty";
+        return head->getData();
+    }
+
+    void push(int d)
+    {
+        Node* new_node = new Node(d);
+        if(head == NULL)
+            head = new_node;
+        else
+        {
+            new_node->previous = head;
+            head = new_node;
+        }
+    }
+
+    void pop()
+    {
+        if(head == NULL)
+            cout << "Empty" << endl;
+        else
+        {
+            Node* temp = head;
+            head = head->previous;
+            delete temp;
+        }
+    }
+    void PrintOut()
+    {
+        printOut(head);
+    }
+};
+int main()
+{
+    Stack s;
+//    if(s.isEmpty())
+//        cout << "YES" << endl;
+//    else
+//        cout << "NO" << endl;
+
+    s.push(10);
+    s.push(20);
+    s.push(30);
+
+//    if(s.isEmpty())
+//        cout << "YES" << endl;
+//    else
+//        cout << "NO" << endl;
+
+//    s.pop();
+//    s.pop();
+//    cout << s.peek() << endl;
+    s.PrintOut();
+    return 0;
+}
