@@ -1,0 +1,50 @@
+//min value greater than number x and max val lesser than number y in array
+//TIME COMPLEXCITY :O(log(n))
+
+int  binarySearch(const vector<long>& arr, int l, int r, long x)
+{
+    if (r > l)
+    {
+        int mid = l + (r - l) / 2;
+        if (arr[mid] == x)
+            return mid;
+        if (arr[mid] > x)
+            return binarySearch(arr, l, mid - 1, x);
+        return binarySearch(arr, mid + 1, r, x);
+    }
+    return l;
+}
+void getCover(const vector<long>& y, const vector<long>& r, const vector<long>& location_town, vector<Pair>& cover)
+{
+    int m = y.size();
+    for(int k = 0; k < m; k++)
+    {
+        long left, right;
+        int most_left, most_right;
+        left = max(y[k]-r[k], long(1));
+        right = min(y[k]+r[k], *(location_town.rbegin()));
+        int i, size;
+        size = location_town.size();
+        if(left > location_town[size-1] || right < location_town[0])
+        {
+            continue;
+        }
+        if(left <= location_town[0])
+            most_left = 0;
+        else
+        {
+            i = binarySearch(location_town, 0, size-1, left);
+            most_left = (location_town[i] >= left) ? i : i+1;
+        }
+        if(right >= location_town[size-1])
+            most_right = size-1;
+        else
+        {
+            i = binarySearch(location_town, 0, size-1, right);
+            most_right = (location_town[i] <= right) ? i : i-1;
+        }
+
+        if(most_left <= most_right)
+            cover.push_back({most_left, most_right});
+    }
+}
