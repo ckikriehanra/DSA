@@ -1,0 +1,52 @@
+#include <iostream>
+
+using namespace std;
+class String
+{
+private:
+    string msg;
+    int my_hash = 0;//cache of hash code
+    int hashCode()
+    {
+        int h = my_hash;
+        if(h != 0)
+            return h;//return cached value
+        else
+            for(int i = 0; i < msg.size(); i++)
+                h += (msg[i] + 31*h);
+        my_hash = h;//store cache of hashcode
+        return h;
+    }
+public:
+    String (){}
+    void put(string newMsg)
+    {
+        msg = newMsg;
+    }
+    string getKey()
+    {
+        return msg;
+    }
+    int getKey_indexed()
+    {
+        return hashCode();
+    }
+};
+class HashTable
+{
+public:
+    Singlylinkedlist[] data;
+    bool put(string key, int value)
+    {
+        int hashCode()
+    }
+};
+int main()
+{
+    String s;
+    string var;
+    getline(cin, var);
+    s.put(var);
+    cout << s.getKey_indexed() << endl;
+    return 0;
+}
