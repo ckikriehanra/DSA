@@ -1,0 +1,75 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+class Node
+{
+public:
+    int parent;
+    int rank;
+};
+
+//3 operation : find operation, union operation and isCyclic
+vector<Node> dsuf;//disjoint set union find parent
+int find_op(int child)
+{
+    if(dsuf[child].parent == -1)
+        return child;
+    return dsuf[child].parent = find_op(dsuf[child].parent);
+}
+
+void union_op(int fromP, int toP)
+{
+    fromP = find_op(fromP);//absolutely root of fromP
+    toP = find_op(toP);
+    int rank_fromP = dsuf[fromP].rank;
+    int rank_toP = dsuf[toP].rank;
+    if(rank_fromP > rank_toP)
+        dsuf[toP].parent = fromP;
+    else if(rank_fromP < rank_toP)
+            dsuf[fromP].parent = toP;
+        else//(rank_fromP == rank_toP)
+        {
+            dsuf[fromP].parent = toP;
+            dsuf[toP].rank ++;
+        }
+}
+
+bool isCyclic(vector<pair<int, int>> edges)
+{
+    for(auto p : edges)
+    {
+        int fromP = find_op(p.first);//find absolute root
+        int toP = find_op(p.second);
+        if(fromP == toP)
+            return true;
+        //union
+        union_op(fromP, toP);
+    }
+    return false;
+}
+int main()
+{
+    int E, V;
+    //number of edges
+    //number of vertices
+    cin >> E >> V;
+    Node temp;
+    temp.parent = -1;
+    temp.rank = 0;
+    dsuf.resize(E+1, temp);//mark all element is absolutely root
+
+    vector<pair<int, int>> edges;
+    for(int i = 0; i < V; i++)
+    {
+        int fromP, toP;
+        cin >> fromP >> toP;
+        edges.push_back({fromP, toP});
+    }
+
+    if(isCyclic(edges))
+        cout << "YES\n";
+    else
+        cout << "NO\n";
+    return 0;
+}
