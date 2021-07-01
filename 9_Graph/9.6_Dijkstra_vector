@@ -1,0 +1,88 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef pair<int, int> Pair;
+#define V 3		//No of vertices
+
+void dijkstra(vector<vector<Pair>> graph, int n, int s_point)
+{
+	vector<int> parent(n, -1);   //Stores Shortest Path Structure
+	vector<int> value(n, INT_MAX);	//Keeps shortest path values to each vertex from source
+	vector<bool> processed(n, false);	//TRUE->Vertex is processed
+    priority_queue<Pair, vector<Pair>, greater<Pair>> pq;// top is minVertex : (value ; vertex)
+
+
+	parent[s_point] = -1;	//Start node has no parent
+	value[s_point] = 0;	//start node has value=0 to get picked 1st
+    pq.push({0, s_point});//first element in pq
+
+	while(!pq.empty())
+	{
+		//Select best Vertex by applying greedy method
+		int u;
+		while(!pq.empty())
+        {
+            if(processed[pq.top().second])
+                pq.pop();
+            else
+                break;
+        }
+        if(pq.empty())
+            break;
+        u = pq.top().second;
+        pq.pop();
+		processed[u] = true;	//Include new Vertex in shortest Path Graph
+
+		//Relax adjacent vertices (not yet included in shortest path graph)
+		int range = graph[u].size();
+		for(int j=0;j<range;++j)
+		{
+			/* 3 conditions to relax:-
+			      1.Edge is present from U to j.
+			      2.Vertex j is not included in shortest path graph
+			      3.Edge weight is smaller than current edge weight
+			*/
+			int x = graph[u][j].first;
+			int w = graph[u][j].second;
+			if(processed[x]==false  && (value[u]+w < value[x]))
+			{
+				value[x] = value[u]+w;
+				parent[x] = u;
+				pq.push(make_pair(value[x], x));
+			}
+		}
+
+	}
+	//Print Shortest Path Graph
+	for(int i = 0; i < n; i++)
+        cout << i << ':' << value[i] << endl;
+}
+int main()
+{
+//	int graph[V][V] = { {0, 1, 4, 0, 0, 0},
+//						{1, 0, 4, 2, 7, 0},
+//						{4, 4, 0, 3, 5, 0},
+//						{0, 2, 3, 0, 4, 6},
+//						{0, 7, 5, 4, 0, 7},
+//						{0, 0, 0, 6, 7, 0} };
+    vector<vector<int>> edges = {
+                                    {1, 2, 8},
+                                    {2, 3, 2},
+                                    {2, 4, 4},
+                                    {4, 5, 1}
+                                };
+    vector<vector<Pair>> graph(5);
+    for(auto edge : edges)
+    {
+        int u, v, w;
+        u = edge[0] - 1;
+        v = edge[1] - 1;
+        w = edge[2];
+        graph[u].push_back({v, w});
+        graph[v].push_back({u, w});
+    }
+	dijkstra(graph, 5, 1-1);
+	return 0;
+}
+
+//TIME COMPLEXITY: (using Min-Heap + Adjacency_List): O(ElogV)
+
