@@ -1,0 +1,97 @@
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+
+using namespace std;
+//graph : G = (V, E)
+class Graph
+{
+private:
+    unordered_map<string, int> vertexs;
+    vector<vector<int>> edges;
+public:
+    Graph(){}
+    void putVertex(string name)
+    {
+        int index = vertexs.size();
+        vertexs.insert({name, index});
+    }
+    void createEdge()
+    {
+        int v = vertexs.size();//|vartexs| == v
+        for(int i = 0; i < v; i++)
+        {
+            vector<int> temp(v);
+            for(int j = 0; j < v; j++)
+                temp[i] = 0;
+            edges.push_back(temp);
+        }
+    }
+    void putEdge(string name_start_vertex, string name_end_vertex, int w)
+    {
+        if(edges.size() == 0)
+            createEdge();
+        edges[vertexs[name_start_vertex]][vertexs[name_end_vertex]] = w;
+        edges[vertexs[name_end_vertex]][vertexs[name_vertex]] = w;
+    }
+    //time complexity = O(E)
+    vector<int> finding_adj_nodes(string start)
+    {
+        vector<int> result;
+        int index = vertexs[start];
+        for(int j = 0; j < vertexs.size(); j++)
+            if(edges[index][j] != 0)
+                result.push_back(j);
+        return result;
+    }
+    bool areConnected(string vertex1, string vertex2)
+    {
+        return (edges[vertexs[vertex1]][vertexs[vertex2]] != 0);
+    }
+    void display()
+    {
+        int v = vertexs.size(); // |vertexs| == v
+        for(int i = 0; i < v; i++)
+        {
+            for(int j = 0; j < v; j++)
+                cout << edges[i][j] << ' ';
+            cout << endl;
+        }
+    }
+};
+int main()
+{
+    Graph g;
+    //put vertex into graph
+    g.putVertex("A");
+    g.putVertex("B");
+    g.putVertex("C");
+    g.putVertex("D");
+    g.putVertex("E");
+    g.putVertex("F");
+    g.putVertex("G");
+    g.putVertex("H");
+    //make edge
+    g.putEdge("A", "B", 5);
+    g.putEdge("A", "C", 7);
+    g.putEdge("A", "D", 3);
+    g.putEdge("B", "E", 2);
+    g.putEdge("B", "F", 10);
+    g.putEdge("C", "G", 1);
+    g.putEdge("D", "H", 11);
+    g.putEdge("E", "H", 9);
+    g.putEdge("F", "H", 4);
+    g.putEdge("G", "H", 6);
+
+//    g.display();
+
+//    vector<int> result = g.finding_adj_nodes("A");
+//    for(int& var : result)
+//        cout << var << ' ';
+
+    if(g.areConnected("B", "A"))
+        cout << "YES\n";
+    else
+        cout << "NO\n";
+    return 0;
+}
