@@ -1,0 +1,171 @@
+#include <iostream>
+
+using namespace std;
+class Node
+{
+public:
+    int key;
+    int data;
+    Node* left;
+    Node* right;
+
+    Node(int k, int d)
+    {
+        key = k;
+        data = d;
+        left = right = NULL;
+    }
+    Node()
+    {
+        key = data = -1;
+        left = right = NULL;
+    }
+};
+class BST
+{
+private:
+    Node* root = new Node();
+    Node* put(Node* x, int key, int data)
+    {
+        if(x == NULL)
+            return new Node(key, data);
+        if(key > x->key)
+            x->right = put(x->right, key, data);
+        else
+            if(key < x->key)
+                x->left = put(x->left, key, data);
+            else
+                x->data = data;
+        return x;
+    }
+    Node* delete_node(Node* x, int key)
+    {
+        if(x == NULL)
+            return x;
+        if(key > x->key)
+            x->right = delete_node(x->right, key);
+        else
+            if(key < x->key)
+                x->left = delete_node(x->left, key);
+            else
+            {
+                //delete node(is leaf) : setting parent link to NULL
+                if(x->left == NULL && x->right == NULL)
+                {
+                    Node* temp = x;
+                    x = NULL;
+                    delete temp;//delete data in x
+                    return x;
+                }
+
+                //delete node(has 1 child) : replacing parent link
+                if(x->left == NULL || x->right == NULL)
+                {
+                    Node* temp = x;
+                    if(x->left == NULL)
+                        x = x->right;
+                    else
+                        x = x->left;
+                    delete temp;
+                    return x;
+                }
+                //delete node(has 2 childs) :
+                //find successor of x
+                //replace key and data of x by successor
+                //delete successor
+                if(x->left != NULL && x->right != NULL)
+                {
+                    Node* temp = x;
+                    temp = temp->right;
+                    while(temp->left != NULL)
+                    {
+                        temp = temp->left;
+                    }
+                    x->key = temp->key;
+                    x->data = temp->data;
+                    int k = temp->key;
+                    x->right = delete_node(x->right, k);
+
+                }
+            }
+        return x;
+    }
+    void printOut(Node* x)
+    {
+        if(x->left != NULL)
+            printOut(x->left);
+        cout << x->data << ' ';
+        if(x->right != NULL)
+            printOut(x->right);
+    }
+    int getHeight(Node* root)
+    {
+        if(!root) {
+            return -1;
+        }
+        int leftDepth = getHeight(root->left);
+        int rightDepth = getHeight(root->right);
+
+        return (leftDepth > rightDepth ? leftDepth : rightDepth) + 1;
+    }
+public:
+    BST()
+    {
+        root = NULL;
+    }
+    void put(int key, int data)
+    {
+        root = put(root, key, data);
+    }
+    int get(int key)
+    {
+        Node* x = root;
+        while(x != NULL)
+        {
+            if(key > x->key)
+                x= x->right;
+            else
+                if(key < x->key)
+                    x = x->left;
+            else
+                return x->data;
+        }
+        throw "NOT FOUND";
+        return 1;
+    }
+    void delete_node(int key)
+    {
+        root = delete_node(root, key);
+    }
+    void printOut()
+    {
+        printOut(root);
+    }
+    int getHeight()
+    {
+        return getHeight(root);
+    }
+};
+int main()
+{
+    BST b;
+    b.put(2, 20);
+    b.put(1, 10);
+    b.put(4, 30);
+    b.put(3, 50);
+    b.put(5, 60);
+    b.delete_node(2);
+    b.printOut();
+//    int value;
+//    try{
+//        value = b.get(20);
+//        cout << value << endl;
+//    }
+//    catch(const char* msg)
+//    {
+//        cout << msg << endl;
+//    }
+//    cout << b.getHeight();
+
+    return 0;
+}
