@@ -1,0 +1,52 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+//3 operation : find operation, union operation and isCyclic
+vector<int> dsuf;//disjoint set union find parent
+int find_op(int child)
+{
+    if(dsuf[x] == -1)
+        return x;
+    return dsuf[x] = find_op(dsuf[x], dsuf);//path compresion
+}
+
+void union_op(int fromP, int toP)
+{
+    fromP = find_op(fromP);//absolutely root of fromP
+    toP = find_op(toP);
+    dsuf[fromP] = toP;
+}
+
+bool isCyclic(vector<pair<int, int>> edges)
+{
+    for(auto p : edges)
+    {
+        int fromP = find_op(p.first);//find absolute root
+        int toP = find_op(p.second);
+        if(fromP == toP)
+            return true;
+        //union
+        union_op(fromP, toP);
+    }
+    return false;
+}
+int main()
+{
+    int E, V;
+    //number of edges
+    //number of vertices
+    cin >> E >> V;
+    dsuf.resize(E, -1);//mark all element is absolutely root
+    vector<pair<int, int>> edges;
+    for(int i = 0; i < V; i++)
+    {
+        int fromP, toP;
+        cin >> fromP >> toP;
+        edges.push_back({fromP, toP});
+    }
+    if(isCyclic(edges))
+        cout << "YES\n";
+    else
+        cout << "NO\n";
+    return 0;
+}
