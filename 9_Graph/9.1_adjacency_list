@@ -1,0 +1,150 @@
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+
+using namespace std;
+//graph : G = (V, E)
+class Node
+{
+public:
+    int index;
+    int weight;
+    Node* next;
+    Node(int i, int w)
+    {
+        index =i;
+        weight = w;
+        next = NULL;
+    }
+};
+
+class Graph
+{
+private:
+    unordered_map<string, int> vertexs;
+    vector<Node*> edges;
+public:
+    Graph(){}
+    void putVertex(string name)
+    {
+        int index = vertexs.size();
+        vertexs.insert({name, index});
+    }
+    void createEdge()
+    {
+        int v = vertexs.size();//|vartexs| == v
+        for(int i = 0; i < v; i++)
+            edges.push_back(NULL);
+    }
+    void Insert(Node*& x, Node* newNode)
+    {
+        Node* temp = x;
+        if(temp == NULL)
+        {
+            x = newNode;
+            return;
+        }
+        while(temp->next != NULL)
+        {
+            temp = temp->next;
+        }
+        temp->next = newNode;
+    }
+    void putEdge(string name_start_vertex, string name_end_vertex, int w)
+    {
+        if(edges.size() == 0)
+        {
+            createEdge();
+        }
+        int index1 = vertexs[name_start_vertex];
+        int index2 = vertexs[name_end_vertex];
+
+        Node* newNode_follow = new Node(index2, w);
+        Insert(edges[index1], newNode_follow);
+
+
+        Node* newNode_unfollow = new Node(index1, w);
+        Insert(edges[index2], newNode_unfollow);
+    }
+    //time complexity = O(V)
+    vector<int> finding_adj_nodes(string start)
+    {
+        vector<int> result;
+        int index = vertexs[start];
+        Node* temp = edges[index];
+        while(temp!= NULL)
+        {
+            result.push_back(temp->index);
+            temp = temp->next;
+        }
+        return result;
+    }
+    bool areConnected(string vertex1, string vertex2)
+    {
+        int index1 = vertexs[vertex1];
+        int index2 = vertexs[vertex2];
+        Node* temp = edges[index1];
+        while(temp!= NULL)
+        {
+            if(index2 == temp->index)
+                return true;
+            temp = temp->next;
+        }
+        return false;
+    }
+    void printOut(Node* head)
+    {
+        Node* temp = head;
+        while(temp != NULL)
+        {
+            cout << temp->index << ' ';
+            temp = temp->next;
+        }
+        cout << endl;
+    }
+    void display()
+    {
+        int v = vertexs.size(); // |vertexs| == v
+        for(int i = 0; i < v; i++)
+        {
+            cout << i << ": ";
+                printOut(edges[i]);
+        }
+    }
+};
+int main()
+{
+    Graph g;
+    //put vertex into graph
+    g.putVertex("A");
+    g.putVertex("B");
+    g.putVertex("C");
+    g.putVertex("D");
+    g.putVertex("E");
+    g.putVertex("F");
+    g.putVertex("G");
+    g.putVertex("H");
+    //make edge
+    g.putEdge("A", "B", 5);
+    g.putEdge("A", "C", 7);
+    g.putEdge("A", "D", 3);
+    g.putEdge("B", "E", 2);
+    g.putEdge("B", "F", 10);
+    g.putEdge("C", "G", 1);
+    g.putEdge("D", "H", 11);
+    g.putEdge("E", "H", 9);
+    g.putEdge("F", "H", 4);
+    g.putEdge("G", "H", 6);
+
+    //g.display();
+
+//    vector<int> result = g.finding_adj_nodes("H");
+//    for(int& var : result)
+//        cout << var << ' ';
+
+    if(g.areConnected("D", "E"))
+        cout << "YES\n";
+    else
+        cout << "NO\n";
+    return 0;
+}
