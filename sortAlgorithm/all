@@ -1,0 +1,157 @@
+void Selection_sort(vector<int>& array)
+{
+    //invariant :a[i] one by one is min of N-k number
+    int i, j, index_min, value;
+    int size = array.size();
+    for(i = 0; i < size-1; i++)
+    {
+        index_min = i;
+        value = array[i];
+        for(j = i+1; j < size; j++)
+        {
+            if(value> array[j])
+            {
+                index_min = j;
+                value = array[j];
+            }
+        }
+        swap(array[index_min], array[i]);
+    }
+}
+
+void Insertion_sort(vector<int>& array)
+{
+    //invariant: all element before a[i] is sort and don't care behind
+    int i, j, value, size = array.size();
+    for(i = 0; i < size; i++)
+    {
+        value = array[i];
+        j = i;
+        while(j > 0 && array[j-1] > value)
+        {
+            array[j] = array[j-1];
+            j--;
+        }
+        array[j] = value;
+    }
+}
+
+void Shell_sort(vector<int>& array)
+{
+    //invariant : is variation of insertion sort in oder to increase times value find location
+    // h = 1, 4, 13, 40, .... 3*k+1
+    //h = 3*h+1
+    //time complexity: O(N^3/2); space : O(1)
+    int h = 0, size = array.size();
+    while(h < size)
+    {
+        h = h*3+1;
+    }
+    while(1)
+    {
+        int i, j, value;
+        h = (h-1)/3;
+        if(h == 0)
+            break;
+        for(i = h; i < size; i+=h)
+        {
+            j = i;
+            value = array[i];
+            while(j >= h && array[j-h] > value)
+            {
+                array[j] = array[j-h];
+                j -= h;
+            }
+            array[j] = value;
+        }
+    }
+}
+
+void Bubble_sort(vector<int>& array)
+{
+    //invariant: after once read all sub array we find max end put it into end of sub array
+    bool check = false;
+    int j = 1, i, size = array.size();
+    while(check == false)
+    {
+        check = true;
+        for(i = 0; i < size-j; i++)
+        {
+            if(array[i] > array[i+1])
+            {
+                swap(array[i], array[i+1]);
+                check = false;
+            }
+        }
+        j++;
+    }
+}
+
+//Merge two halves sorted
+void Merge(vector<int>& array, int low, int mid, int hight)
+{
+    vector<int> aux(hight-low+1);
+    int i = low, j = mid+1;
+    for(int k  = low; k <= hight; k++)
+    {
+        if(i > mid)
+            aux[k] = array[j++];
+        else
+            if(j > hight)
+                aux[k] = array[i++];
+            else
+            {
+                if(array[j] < array[i])
+                    aux[k] = array[j++];
+                else
+                    aux[k] = array[i++];
+            }
+    }
+    for(int i = low; i <= hight; i++)
+        array[i] = aux[i];
+}
+void Merge_sort(vector<int>& array, int low, int hight)
+{
+    //invariant : we sort two halves and merge two to one
+    int mid;
+    if(low >= hight)
+        return;
+    else
+    {
+        mid = low + (hight - low) / 2;
+        Merge_sort(array, low, mid);
+        Merge_sort(array, mid+1, hight);
+        Merge(array,low, mid, hight);
+    }
+}
+
+int partititon(vector<int>& numbers, int start, int end)
+{
+    //purpose : find p-index and left ele<|pivot|<=right ele
+    //invariant; right of j >= pivot
+    //                left of i <= pivot
+    //                 don't know mid
+    //auto peek first element of sub array is pivot
+    int pivot = numbers[end];
+    int p_index = start;
+    for(int i = start; i < end; i++)
+    {
+        if(numbers[i] <= pivot)
+        {
+            swap(numbers[i], numbers[p_index]);
+            p_index++;
+        }
+    }
+    swap(numbers[p_index], numbers[end]);
+    return p_index;
+}
+void quickSort(vector<int>& numbers, int start, int end)
+{
+    //base case: when we divide to 0 or 1 ele
+    if(start >= end)
+        return;
+    int p_index = partititon(numbers, start, end);
+    //divide
+    quickSort(numbers, start, p_index-1);
+    quickSort(numbers, p_index+1, end);
+}
