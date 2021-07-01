@@ -1,0 +1,102 @@
+#include <iostream>
+
+using namespace std;
+class Node
+{
+public:
+    int data;
+    Node* next;
+    Node(int d)
+    {
+        data = d;
+        next = NULL;
+    }
+    Node()
+    {
+        next = NULL;
+    }
+};
+class Queue
+{
+//FIFO : first in first out
+private :
+    Node* head;//remove from here
+    Node* tail;//add here
+public:
+    Queue()
+    {
+        head = tail = NULL;
+    }
+    bool isEmpty()
+    {
+        return (head == NULL);
+    }
+
+    int peek()
+    {
+        if(head == NULL)
+            throw "Empty";//const char* const char int float
+        return head->data;
+    }
+
+    void add(int d)
+    {
+        Node* newNode = new Node(d);
+        if(tail != NULL)
+        {
+            tail->next = newNode;
+            //update tail
+            tail = tail->next;
+        }
+        else
+        {
+            head = tail = newNode;
+        }
+    }
+    void myRemove()
+    {
+        //remove head
+        if(head == NULL)
+        {
+            cout << "Queue is empty" << endl;
+            return;
+        }
+        Node* temp = head;
+        head = head->next;
+        if(head == NULL)
+            tail = NULL;
+        delete temp;
+    }
+    void printOut()
+    {
+        Node* temp = head;
+        while(temp != NULL)
+        {
+            cout << temp->data << ' ';
+            temp = temp->next;
+        }
+    }
+};
+int main()
+{
+    Queue q;
+    q.add(10);
+//    q.add(20);
+//    q.add(30);
+//    q.add(40);
+    q.myRemove();
+//    q.printOut();
+//    if(q.isEmpty())
+//        cout << "YES" << endl;
+//    else
+//        cout << "NO" << endl;
+    try{
+        int val = q.peek();
+        cout << val << endl;
+    }
+    catch(const char* msg)
+    {
+        cout << msg << endl;
+    }
+    return 0;
+}
