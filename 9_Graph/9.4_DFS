@@ -1,0 +1,33 @@
+#include <iostream>
+#include <vector>
+#include <stack>
+using namespace std;
+void DFS(const vector<vector<int>>& G, int n)
+{
+    vector<bool> marks(n, false);
+    stack<int> s;
+    s.push(0);
+    while(!s.empty())
+    {
+        int curr = s.top();
+        cout << curr << ' ';
+        s.pop();
+        for(auto val : G[curr])
+            if(marks[val] == false)
+            {
+                marks[val] = true;
+                s.push(val);
+            }
+    }
+}
+int main()
+{
+    vector<vector<int>> G;
+    G = {{1, 3},
+         {2},
+         {3},
+         {}
+            };
+    DFS(G, 4);
+    return 0;
+}
