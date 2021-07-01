@@ -1,4 +1,4 @@
-a//Stack is linear data structure : ||||| : LIFO : last in first out : imagine birthday cake
+//Stack is linear data structure : ||||| : LIFO : last in first out : imagine birthday cake
 #include <iostream>
 
 using namespace std;
