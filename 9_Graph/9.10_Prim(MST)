@@ -1,0 +1,66 @@
+//prim algorithm
+void prims(int n, vector<vector<int>> edges, int start) {
+    start --;
+    vector<vector<Pair>> adj(n);
+    for(auto edge : edges)
+    {
+        int u, v, w;
+        u = edge[0] - 1;
+        v = edge[1] - 1;
+        w = edge[2];
+        adj[u].push_back({v, w});
+        adj[v].push_back({u, w});
+    }
+
+    vector<int> parent(n, -1);
+        //Stores Shortest Path Structure
+    vector<int> dists(n, INT_MAX);
+        //Keeps shortest path values to each vertex from source
+    vector<bool> MSTset(n, false);
+        //TRUE->Vertex is processed
+    priority_queue<Pair, vector<Pair>, greater<Pair>> pq;
+        // top is minVertex : (dists ; vertex)
+
+    //Assuming start point as Node-0
+    parent[start] = -1;    //Start node has no parent
+    dists[start] = 0;    //start node has dists=0 to get picked 1st
+    pq.push(make_pair(0, start));//first element in pq
+
+    while(!pq.empty())
+    {
+        //Select best Vertex by applying greedy method
+        int U;
+        while(!pq.empty())
+        {
+            if(MSTset[pq.top().second])
+                pq.pop();
+            else
+                break;
+        }
+        if(pq.empty())
+            break;
+        U = pq.top().second;
+        pq.pop();
+        MSTset[U] = true;    //Include new Vertex in shortest Path adj
+
+        //Relax adjacent vertices (not yet included in shortest path adj)
+        int range = adj[U].size();
+        for(int j=0;j<range;++j)
+        {
+            /* 3 conditions to relax:-
+                  1.Edge is present from U to j.
+                  2.Vertex j is not included in shortest path adj
+                  3.Edge weight is smaller than current edge weight
+            */
+            int x = adj[U][j].first;
+            int w = adj[U][j].second;
+            if(MSTset[x]==false  && (w < dists[x]))
+            {
+                dists[x] = w;
+                parent[x] = U;
+                pq.push(make_pair(dists[x], x));
+            }
+        }
+    }
+}
+//TIME COMPLEXITY: (using Min-Heap + Adjacency_List): O(ElogV)
